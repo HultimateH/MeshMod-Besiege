@@ -9,7 +9,7 @@ using UnityEngine;
 public class ResourcesFormater
 {
     //自带预制模型的路径
-    public static string PrefabPath = @"Resources\Prefab";
+    public static string PrefabPath = @"Resources\Prefabs";
 
     //用户自定模型路径
     public static string CustomPath = "";
