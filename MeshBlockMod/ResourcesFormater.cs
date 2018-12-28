@@ -30,9 +30,9 @@ public class ResourcesFormater
 
         string[] vs = ModIO.GetFiles(path, data);
 
+        Debug.Log("read...");
         Debug.Log(vs.Length);
         Debug.Log(vs[0]);
-        Console.WriteLine(vs[0]);
    
 
         
