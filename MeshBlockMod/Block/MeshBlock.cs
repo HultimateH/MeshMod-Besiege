@@ -184,7 +184,7 @@ public class MeshBlockScript : BlockScript
         //ColliderMenu = AddMenu("Collider", 0, MeshBlockMod.NRF.MeshNames);
         //ColliderMenu.ValueChanged += ChangedCollider;
         //DisplayColliderToggle = AddToggle("碰撞可视", "DisplayCollider", false);
-        EnabledColliderToggle = AddToggle(LanguageManager.EnabledCollider, "EnabledCollider", false);
+        EnabledColliderToggle = AddToggle(LanguageManager.EnabledCollider, "EnabledCollider", true);
         //DynamicFrictionSlider = AddSlider("滑动摩擦", "DynamicFriction", 0.5f, 0f, 1f);
         //StaticFrictionSlider = AddSlider("静态摩擦", "StaticFriction", 0.5f, 0f, 1f);
         //BouncynessSlider = AddSlider("表面弹性", "Bouncyness", 0f, 0f, 1f);
@@ -258,7 +258,7 @@ public class MeshBlockScript : BlockScript
             {
                 gameObject = tra.GetComponentInChildren<MeshCollider>().gameObject;
             }
-            
+
             MeshCollider meshCollider = gameObject.GetComponent<MeshCollider>() ?? gameObject.AddComponent<MeshCollider>();
             meshCollider.convex = true;
             return meshCollider;
@@ -274,7 +274,8 @@ public class MeshBlockScript : BlockScript
         HardnessMenu.DisplayInMapper = MassFormSizeToggle.DisplayInMapper = MassSlider.DisplayInMapper = DragSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.BaseSetting);
 
         //碰撞组件显示
-        /*ColliderMenu.DisplayInMapper =*/ /*DisplayColliderToggle.DisplayInMapper*/EnabledColliderToggle.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.ColliderSetting);
+        /*ColliderMenu.DisplayInMapper =*/ /*DisplayColliderToggle.DisplayInMapper*/
+        EnabledColliderToggle.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.ColliderSetting);
         //DynamicFrictionSlider.DisplayInMapper = StaticFrictionSlider.DisplayInMapper = BouncynessSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.碰撞设置);
 
         //模型组件显示
@@ -428,7 +429,7 @@ public class MeshBlockScript : BlockScript
         //{
         //    MC_MR.enabled = true;
         //}
-        MC.isTrigger = false;
+        //MC.isTrigger = false;
     }
 
     public override void OnSimulateStart()
