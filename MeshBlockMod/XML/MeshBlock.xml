@@ -149,11 +149,11 @@
 			<Rotation x="0.0" y="0.0" z="0.0" />
 			<Scale x="0.95" y="0.95" z="0.95" />
 		</BoxCollider>
-    <SphereCollider>
+    <!--<SphereCollider>
       <Position x="0.0" y="0.0" z="0.5" />
       <Radius>0.475</Radius>
     </SphereCollider>
-    <!--<CapsuleCollider>
+    <CapsuleCollider>
 			<Position x="0.0" y="0.0" z="0.0" />
 			<Rotation x="0.0" y="0.0" z="0.0" />
 			<Capsule direction="X" radius="1.0" height="2.0" />

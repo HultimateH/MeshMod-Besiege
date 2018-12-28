@@ -95,10 +95,11 @@ public class MeshBlockScript : BlockScript
     //声明碰撞设置功能组件
     //声明碰撞 碰撞 动静摩擦 弹力显示相关组件和相关变量
     //MMenu ColliderMenu;
-    MToggle DisplayColliderToggle;
-    MSlider DynamicFrictionSlider;
-    MSlider StaticFrictionSlider;
-    MSlider BouncynessSlider;
+    MToggle EnabledColliderToggle;
+    //MToggle DisplayColliderToggle;
+    //MSlider DynamicFrictionSlider;
+    //MSlider StaticFrictionSlider;
+    //MSlider BouncynessSlider;
 
     //声明模型设置功能组件
     //声明网格 贴图 碰撞 碰撞显示 旋转相关组件和相关变量
@@ -128,9 +129,9 @@ public class MeshBlockScript : BlockScript
 
     //声明需要使用的已存在组件
     MeshFilter MF;
-    MeshRenderer MR, MC_MR;
+    MeshRenderer MR/*, MC_MR*/;
     MeshCollider MC;
-    SphereCollider SC;
+    //SphereCollider SC;
     ConfigurableJoint CJ;
     Rigidbody RB;
     //NeedResourceFormat NRF = MeshBlockMod.NRF;
@@ -153,12 +154,12 @@ public class MeshBlockScript : BlockScript
         MR = GetComponentsInChildren<MeshRenderer>().ToList().Find(match => match.name == "Vis");
         //MC = GetComponentsInChildren<MeshCollider>().ToList().Find(match => match.name == "MeshCollider"); 
         MC = AddMeshCollider();
-        SC = GetComponentsInChildren<SphereCollider>().ToList().Find(match => match.name == "SphereCollider");
+        //SC = GetComponentsInChildren<SphereCollider>().ToList().Find(match => match.name == "SphereCollider");
         //MR.material = new Material(Shader.Find("Diffuse"));
-        MC_MR = MC.GetComponent<MeshRenderer>();
+        //MC_MR = MC.GetComponent<MeshRenderer>();
         CJ = GetComponent<ConfigurableJoint>();
         RB = /*GetComponent<Rigidbody>()*/ Rigidbody;
-
+        GetComponentsInChildren<BoxCollider>().ToList().Find(match => match.name == "Box Collider").isTrigger = true; 
 
         #endregion
 
@@ -182,13 +183,14 @@ public class MeshBlockScript : BlockScript
         //碰撞设置
         //ColliderMenu = AddMenu("Collider", 0, MeshBlockMod.NRF.MeshNames);
         //ColliderMenu.ValueChanged += ChangedCollider;
-        DisplayColliderToggle = AddToggle("碰撞可视", "DisplayCollider", false);
-        DynamicFrictionSlider = AddSlider("滑动摩擦", "DynamicFriction", 0.5f, 0f, 1f);
-        StaticFrictionSlider = AddSlider("静态摩擦", "StaticFriction", 0.5f, 0f, 1f);
-        BouncynessSlider = AddSlider("表面弹性", "Bouncyness", 0f, 0f, 1f);
-        DynamicFrictionSlider.ValueChanged += (float value) => { SC.material.dynamicFriction = MC.material.dynamicFriction = value; };
-        StaticFrictionSlider.ValueChanged += (float value) => { SC.material.staticFriction = MC.material.staticFriction = value; };
-        BouncynessSlider.ValueChanged += (float value) => { SC.material.bounciness = MC.material.bounciness = value; };
+        //DisplayColliderToggle = AddToggle("碰撞可视", "DisplayCollider", false);
+        EnabledColliderToggle = AddToggle("碰撞开启", "EnabledCollider", false);
+        //DynamicFrictionSlider = AddSlider("滑动摩擦", "DynamicFriction", 0.5f, 0f, 1f);
+        //StaticFrictionSlider = AddSlider("静态摩擦", "StaticFriction", 0.5f, 0f, 1f);
+        //BouncynessSlider = AddSlider("表面弹性", "Bouncyness", 0f, 0f, 1f);
+        //DynamicFrictionSlider.ValueChanged += (float value) => { /*SC.material.dynamicFriction =*/ MC.material.dynamicFriction = value; };
+        //StaticFrictionSlider.ValueChanged += (float value) => { /*SC.material.staticFriction = */MC.material.staticFriction = value; };
+        //BouncynessSlider.ValueChanged += (float value) => { /*SC.material.bounciness = */MC.material.bounciness = value; };
 
         //自定模型组件
         //旋转、位置滑条；网格、贴图、碰撞菜单；碰撞可视相关组件；
@@ -231,7 +233,7 @@ public class MeshBlockScript : BlockScript
         #region 相关组件赋初值
 
         ChangedHardness();
-        //DisplayInMapper();
+        DisplayInMapper();
         RefreshVisual();
         ChangedCollider();
         ChangedPoint();
@@ -258,6 +260,7 @@ public class MeshBlockScript : BlockScript
             }
             
             MeshCollider meshCollider = gameObject.GetComponent<MeshCollider>() ?? gameObject.AddComponent<MeshCollider>();
+            meshCollider.convex = true;
             return meshCollider;
         }
 
@@ -271,8 +274,8 @@ public class MeshBlockScript : BlockScript
         HardnessMenu.DisplayInMapper = MassFormSizeToggle.DisplayInMapper = MassSlider.DisplayInMapper = DragSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.基础设置);
 
         //碰撞组件显示
-        /*ColliderMenu.DisplayInMapper =*/ DisplayColliderToggle.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.碰撞设置);
-        DynamicFrictionSlider.DisplayInMapper = StaticFrictionSlider.DisplayInMapper = BouncynessSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.碰撞设置);
+        /*ColliderMenu.DisplayInMapper =*/ /*DisplayColliderToggle.DisplayInMapper*/EnabledColliderToggle.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.碰撞设置);
+        //DynamicFrictionSlider.DisplayInMapper = StaticFrictionSlider.DisplayInMapper = BouncynessSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.碰撞设置);
 
         //模型组件显示
         //MeshMenu.DisplayInMapper = TextureMenu.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.模型设置);
@@ -392,20 +395,20 @@ public class MeshBlockScript : BlockScript
         //MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[TextureMenu.Value]].texture;
         ChangedShader(); ChangedColor();
 
-        //添加碰撞箱可视组件
-        if (MC.GetComponent<MeshFilter>() == null)
-        {
-            //MC.gameObject.AddComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
-            MC.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
-            MeshRenderer mr = MC.gameObject.AddComponent<MeshRenderer>();
-            mr.material.shader = Shader.Find("Transparent/Diffuse");
-            mr.material.color = new Color(1, 1, 1, 0.25f);
-            mr.enabled = DisplayColliderToggle.IsActive;
-        }
-        else
-        {
-            MC.GetComponent<MeshFilter>();
-        }
+        ////添加碰撞箱可视组件
+        //if (MC.GetComponent<MeshFilter>() == null)
+        //{
+        //    //MC.gameObject.AddComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
+        //    MC.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+        //    MeshRenderer mr = MC.gameObject.AddComponent<MeshRenderer>();
+        //    mr.material.shader = Shader.Find("Transparent/Diffuse");
+        //    mr.material.color = new Color(1, 1, 1, 0.25f);
+        //    mr.enabled = DisplayColliderToggle.IsActive;
+        //}
+        //else
+        //{
+        //    MC.GetComponent<MeshFilter>();
+        //}
 
     }
 
@@ -420,19 +423,28 @@ public class MeshBlockScript : BlockScript
             //RefreshVisual();
         }
 
-        //碰撞箱在建造模式下总是显示
-        if (MC_MR.enabled == false)
-        {
-            MC_MR.enabled = true;
-        }
-
+        ////碰撞箱在建造模式下总是显示
+        //if (MC_MR.enabled == false)
+        //{
+        //    MC_MR.enabled = true;
+        //}
+        MC.isTrigger = false;
     }
 
     public override void OnSimulateStart()
     {
-
-        //模拟模式下碰撞显示生效就显示碰撞箱 否则 自动隐藏
-        MC_MR.enabled = DisplayColliderToggle.IsActive;
+        MC.isTrigger = !EnabledColliderToggle.IsActive;
+        if (!MC.isTrigger)
+        {
+            //MC.sharedMesh.CombineMeshes(new CombineInstance[] { new CombineInstance() { mesh = MF.mesh, transform = MF.transform.worldToLocalMatrix , subMeshIndex = 0} });
+            MC.sharedMesh = MF.mesh;
+            MC.transform.localPosition = MF.transform.localPosition;
+            MC.transform.localScale = MF.transform.localScale;
+            MC.transform.eulerAngles = MF.transform.eulerAngles;
+            //MC.transform.position = MF.transform.position;
+        }
+        ////模拟模式下碰撞显示生效就显示碰撞箱 否则 自动隐藏
+        //MC_MR.enabled = DisplayColliderToggle.IsActive;
     }
 
 }
