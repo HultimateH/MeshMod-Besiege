@@ -74,10 +74,10 @@ public class MeshBlockScript : BlockScript
     MMenu PageMenu;
     enum PageMenuList
     {
-        基础设置 = 0,
-        碰撞设置 = 1,
-        模型设置 = 2,
-        渲染设置 = 3
+        BaseSetting = 0,
+        ColliderSetting = 1,
+        MeshSetting = 2,
+        ShaderSetting = 3
     };
 
 
@@ -159,32 +159,32 @@ public class MeshBlockScript : BlockScript
         //MC_MR = MC.GetComponent<MeshRenderer>();
         CJ = GetComponent<ConfigurableJoint>();
         RB = /*GetComponent<Rigidbody>()*/ Rigidbody;
-        GetComponentsInChildren<BoxCollider>().ToList().Find(match => match.name == "Box Collider").isTrigger = true; 
+        GetComponentsInChildren<BoxCollider>().ToList().Find(match => match.name == "Box Collider").isTrigger = true;
 
         #endregion
 
         #region 初始化组件
 
         //功能页组件
-        PageMenu = AddMenu("Page", 0, EnumToStringList.Convert<PageMenuList>());
+        PageMenu = AddMenu("Page", 0, LanguageManager.PageList);
         PageMenu.ValueChanged += (int value) => { DisplayInMapper(); };
 
         //基础功能组件
         //硬度 尺寸决定质量 质量组件
-        HardnessMenu = AddMenu("Hardness", Hardness, new List<string>() { "无碳钢", "低碳钢", "中碳钢", "高碳钢" });
+        HardnessMenu = AddMenu(LanguageManager.Hardness, Hardness, LanguageManager.HardnessList);
         HardnessMenu.ValueChanged += (int value) => { Hardness = value; ChangedHardness(); };
-        MassFormSizeToggle = AddToggle("尺寸决定质量", "MassFormSize", MassFormSize);
+        MassFormSizeToggle = AddToggle(LanguageManager.MassFormSize, "MassFormSize", MassFormSize);
         MassFormSizeToggle.Toggled += (bool value) => { MassFormSize = value; };
-        MassSlider = AddSlider("质量", "Mass", Mass, 0.2f, 2f);
+        MassSlider = AddSlider(LanguageManager.Mass, "Mass", Mass, 0.2f, 2f);
         MassSlider.ValueChanged += (float value) => { Mass = value; };
-        DragSlider = AddSlider("阻力", "Drag", Drag, 0f, 2f);
+        DragSlider = AddSlider(LanguageManager.Drag, "Drag", Drag, 0f, 2f);
         DragSlider.ValueChanged += (float value) => { Drag = value; };
 
         //碰撞设置
         //ColliderMenu = AddMenu("Collider", 0, MeshBlockMod.NRF.MeshNames);
         //ColliderMenu.ValueChanged += ChangedCollider;
         //DisplayColliderToggle = AddToggle("碰撞可视", "DisplayCollider", false);
-        EnabledColliderToggle = AddToggle("碰撞开启", "EnabledCollider", false);
+        EnabledColliderToggle = AddToggle(LanguageManager.EnabledCollider, "EnabledCollider", false);
         //DynamicFrictionSlider = AddSlider("滑动摩擦", "DynamicFriction", 0.5f, 0f, 1f);
         //StaticFrictionSlider = AddSlider("静态摩擦", "StaticFriction", 0.5f, 0f, 1f);
         //BouncynessSlider = AddSlider("表面弹性", "Bouncyness", 0f, 0f, 1f);
@@ -194,16 +194,16 @@ public class MeshBlockScript : BlockScript
 
         //自定模型组件
         //旋转、位置滑条；网格、贴图、碰撞菜单；碰撞可视相关组件；
-        RotationXSlider = AddSlider("旋转X轴", "RotationX", RotationX, 0f, 360f);
-        RotationYSlider = AddSlider("旋转Y轴", "RotationY", RotationY, 0f, 360f);
-        RotationZSlider = AddSlider("旋转Z轴", "RotationZ", RotationZ, 0f, 360f);
+        RotationXSlider = AddSlider(LanguageManager.RotationX, "RotationX", RotationX, 0f, 360f);
+        RotationYSlider = AddSlider(LanguageManager.RotationY, "RotationY", RotationY, 0f, 360f);
+        RotationZSlider = AddSlider(LanguageManager.RotationZ, "RotationZ", RotationZ, 0f, 360f);
         RotationXSlider.ValueChanged += (float value) => { RotationX = value; ChangedRotation(); };
         RotationYSlider.ValueChanged += (float value) => { RotationY = value; ChangedRotation(); };
         RotationZSlider.ValueChanged += (float value) => { RotationZ = value; ChangedRotation(); };
 
-        PositionXSlider = AddSlider("移动X轴", "PositionX", PositionX = MR.transform.localPosition.x, -3f, 3f);
-        PositionYSlider = AddSlider("移动Y轴", "PositionY", PositionY = MR.transform.localPosition.y, -3f, 3f);
-        PositionZSlider = AddSlider("移动Z轴", "PositionZ", PositionZ = MR.transform.localPosition.z, -3f, 3f);
+        PositionXSlider = AddSlider(LanguageManager.OffsetX, "PositionX", PositionX = MR.transform.localPosition.x, -3f, 3f);
+        PositionYSlider = AddSlider(LanguageManager.OffsetY, "PositionY", PositionY = MR.transform.localPosition.y, -3f, 3f);
+        PositionZSlider = AddSlider(LanguageManager.OffsetZ, "PositionZ", PositionZ = MR.transform.localPosition.z, -3f, 3f);
         PositionXSlider.ValueChanged += (float value) => { PositionX = value; ChangedPosition(); };
         PositionYSlider.ValueChanged += (float value) => { PositionY = value; ChangedPosition(); };
         PositionZSlider.ValueChanged += (float value) => { PositionZ = value; ChangedPosition(); };
@@ -216,12 +216,12 @@ public class MeshBlockScript : BlockScript
 
         //渲染设置
         //着色菜单；RGBA滑条相关组件
-        ShaderMenu = AddMenu("Shader", 0, new List<string>() { "漫反射", "透明" });
+        ShaderMenu = AddMenu("Shader", 0, LanguageManager.ShaderList);
         ShaderMenu.ValueChanged += (int value) => { ChangedShader(); };
-        RedSlider = AddSlider("红色通道", "Red", 1f, 0f, 1f);
-        GreenSlider = AddSlider("绿色通道", "Green", 1f, 0f, 1f);
-        BlueSlider = AddSlider("蓝色通道", "Blue", 1f, 0f, 1f);
-        AlphaSlider = AddSlider("Alpha通道", "Alpha", 1f, 0f, 1f);
+        RedSlider = AddSlider("Red", "Red", 1f, 0f, 1f);
+        GreenSlider = AddSlider("Green", "Green", 1f, 0f, 1f);
+        BlueSlider = AddSlider("Blue", "Blue", 1f, 0f, 1f);
+        AlphaSlider = AddSlider("Alpha", "Alpha", 1f, 0f, 1f);
         RedSlider.ValueChanged += (float value) => { ChangedColor(); };
         GreenSlider.ValueChanged += (float value) => { ChangedColor(); };
         BlueSlider.ValueChanged += (float value) => { ChangedColor(); };
@@ -271,19 +271,19 @@ public class MeshBlockScript : BlockScript
     void DisplayInMapper()
     {
         //基础组件显示
-        HardnessMenu.DisplayInMapper = MassFormSizeToggle.DisplayInMapper = MassSlider.DisplayInMapper = DragSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.基础设置);
+        HardnessMenu.DisplayInMapper = MassFormSizeToggle.DisplayInMapper = MassSlider.DisplayInMapper = DragSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.BaseSetting);
 
         //碰撞组件显示
-        /*ColliderMenu.DisplayInMapper =*/ /*DisplayColliderToggle.DisplayInMapper*/EnabledColliderToggle.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.碰撞设置);
+        /*ColliderMenu.DisplayInMapper =*/ /*DisplayColliderToggle.DisplayInMapper*/EnabledColliderToggle.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.ColliderSetting);
         //DynamicFrictionSlider.DisplayInMapper = StaticFrictionSlider.DisplayInMapper = BouncynessSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.碰撞设置);
 
         //模型组件显示
         //MeshMenu.DisplayInMapper = TextureMenu.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.模型设置);
-        RotationXSlider.DisplayInMapper = RotationYSlider.DisplayInMapper = RotationZSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.模型设置);
-        PositionXSlider.DisplayInMapper = PositionYSlider.DisplayInMapper = PositionZSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.模型设置);
+        RotationXSlider.DisplayInMapper = RotationYSlider.DisplayInMapper = RotationZSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.MeshSetting);
+        PositionXSlider.DisplayInMapper = PositionYSlider.DisplayInMapper = PositionZSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.MeshSetting);
 
         //渲染组件显示
-        ShaderMenu.DisplayInMapper = RedSlider.DisplayInMapper = GreenSlider.DisplayInMapper = BlueSlider.DisplayInMapper = AlphaSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.渲染设置);
+        ShaderMenu.DisplayInMapper = RedSlider.DisplayInMapper = GreenSlider.DisplayInMapper = BlueSlider.DisplayInMapper = AlphaSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.ShaderSetting);
 
     }
 

@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Entity\MeshEntityData.cs" />
     <Compile Include="Entity\MeshEntityScript.cs" />
+    <Compile Include="LanguageManager.cs" />
     <Compile Include="NeedResourceFormat.cs" />
     <Compile Include="Block\MeshBlock.cs" />
     <Compile Include="Mod.cs" />
