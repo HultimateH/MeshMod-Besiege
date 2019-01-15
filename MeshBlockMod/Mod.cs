@@ -9,11 +9,12 @@ namespace MeshMod
 {
     public class MeshMod : ModEntryPoint
     {
-        public ResourcesFormater resourcesFormater;
+        public static ResourceFormater resourcesFormater;
 
         public override void OnLoad()
         {
-            resourcesFormater = new ResourcesFormater();
+
+            resourcesFormater = new ResourceFormater();
 
             Events.OnEntityPlaced += (entity) => 
             {
